@@ -1,0 +1,28 @@
+{
+  "name": "comicgenius-pro",
+  "version": "1.0.0",
+  "description": "AI-Powered Comic Creator with Character Consistency using Gemini 2.5 Flash Image Preview",
+  "main": "app.js",
+  "scripts": {
+    "start": "npx serve",
+    "dev": "npx serve",
+    "build": "echo 'No build process required - pure client-side application'"
+  },
+  "keywords": [
+    "gemini",
+    "ai",
+    "comic",
+    "storytelling",
+    "image-generation",
+    "nano-banana",
+    "hackathon"
+  ],
+  "author": "Hackathon Team",
+  "license": "MIT",
+  "dependencies": {
+    "@google/genai": "^0.7.0"
+  },
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}
