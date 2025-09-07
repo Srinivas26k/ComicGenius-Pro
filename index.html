@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComicGenius Pro - AI-Powered Comic Creator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script type="importmap">
+    {
+      "imports": {
+        "@google/genai": "https://esm.sh/@google/genai@^0.7.0"
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <h1>ComicGenius Pro</h1>
+                <p>AI-Powered Comic Creator</p>
+            </div>
+            
+            <!-- API Configuration -->
+            <div class="sidebar-section">
+                <h2>API Configuration</h2>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-2" for="apiKey">
+                        Gemini API Key
+                    </label>
+                    <div class="relative">
+                        <input type="password" id="apiKey" class="w-full py-2 px-3 rounded border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter your Gemini API key">
+                        <button class="absolute right-3 top-2.5 text-muted-foreground hover:text-foreground">
+                            <i class="fas fa-eye-slash eye-icon"></i>
+                        </button>
+                    </div>
+                    <p class="text-xs mt-1 text-muted-foreground">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Get your key from <a href="https://makersuite.google.com/app/apikey" target="_blank" class="text-primary hover:underline">Google AI Studio</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Style Presets -->
+            <div class="sidebar-section">
+                <h2>Art Style</h2>
+                <div class="mb-4">
+                    <select id="stylePreset" class="w-full py-2 px-3 rounded border focus:outline-none focus:ring-2 focus:ring-primary">
+                        <!-- Options populated by JavaScript -->
+                    </select>
+                </div>
+            </div>
+
+            <!-- Keyboard Shortcuts -->
+            <div class="sidebar-section">
+                <h2>Keyboard Shortcuts</h2>
+                <div class="text-sm">
+                    <div class="flex justify-between mb-2">
+                        <span>Generate Character</span>
+                        <span class="px-2 py-0.5 bg-muted rounded text-xs">G</span>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span>Generate Comic</span>
+                        <span class="px-2 py-0.5 bg-muted rounded text-xs">C</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme Toggle -->
+            <div class="sidebar-section">
+                <h2>Theme</h2>
+                <div class="flex items-center justify-between">
+                    <span>Toggle dark mode</span>
+                    <button id="themeToggle" class="w-8 h-8 flex items-center justify-center rounded-full bg-muted hover:bg-muted/80">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <p>Built for Nano Banana Hackathon</p>
+                <p class="mt-1">Using Gemini 2.5 Flash Image</p>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="mb-6">
+                <h1 class="text-3xl font-bold">Create Your Comic Story</h1>
+                <p class="text-muted-foreground">From imagination to visual narrative in seconds</p>
+            </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Character Creation Section -->
+            <div class="bg-white rounded-lg p-6">
+                <h2 class="text-xl font-semibold mb-4">Character Creator</h2>
+                <div class="space-y-4">
+                    <div class="hidden">
+                        <!-- Hidden canvas, only used for character generation logic -->
+                        <canvas id="characterCanvas" width="400" height="300" class="border rounded w-full"></canvas>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2" for="characterDescription">
+                            Character Description
+                        </label>
+                        <textarea 
+                            id="characterDescription" 
+                            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary" 
+                            rows="4" 
+                            placeholder="Describe your character in detail (e.g., 'A tall superhero with a blue costume, red cape, and a lightning bolt symbol on their chest. They have short blonde hair and a determined expression.')">
+                        </textarea>
+                    </div>
+                    <div>
+                        <button id="generateCharacterBtn" class="w-full bg-primary hover:bg-opacity-90 text-primary-foreground font-medium py-2 px-4 rounded flex items-center justify-center">
+                            <i class="fas fa-magic mr-2"></i>Generate Character
+                        </button>
+                    </div>
+                    <div id="characterDisplay" class="bg-muted rounded-lg p-4 flex items-center justify-center min-h-[300px]">
+                        <div class="text-muted-foreground text-center">
+                            <i class="fas fa-user-circle text-5xl mb-2"></i>
+                            <p>Generated character will appear here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comic Creation Section -->
+            <div class="bg-white rounded-lg p-6">
+                <h2 class="text-xl font-semibold mb-4">Comic Panel Creator</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2" for="sceneDescription">
+                            Story/Script
+                        </label>
+                        <textarea 
+                            id="sceneDescription" 
+                            class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary" 
+                            rows="6" 
+                            placeholder="Describe your story in detail or paste your script (e.g., 'A superhero discovers a mysterious glowing portal in the city park at sunset. The portal emits strange energy that attracts the hero's attention...')">
+                        </textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2" for="panelCount">
+                            Number of Panels
+                        </label>
+                        <div class="grid grid-cols-4 gap-2">
+                            <button class="panel-count-btn rounded-lg border py-2 px-4" data-value="3">3</button>
+                            <button class="panel-count-btn rounded-lg border py-2 px-4 bg-primary text-primary-foreground" data-value="4">4</button>
+                            <button class="panel-count-btn rounded-lg border py-2 px-4" data-value="5">5</button>
+                            <button class="panel-count-btn rounded-lg border py-2 px-4" data-value="6">6</button>
+                        </div>
+                        <input type="hidden" id="panelCount" value="4">
+                    </div>
+                    <div>
+                        <button id="generateComicBtn" class="w-full bg-primary hover:bg-opacity-90 text-primary-foreground font-medium py-3 px-4 rounded flex items-center justify-center">
+                            <i class="fas fa-magic mr-2"></i>Generate Comic Story
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="hidden fixed inset-0 bg-popover bg-opacity-70 flex items-center justify-center z-50 backdrop-blur-sm">
+            <div class="bg-card p-8 rounded-lg max-w-md w-full shadow-lg">
+                <div class="flex justify-center">
+                    <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-primary"></div>
+                </div>
+                <div class="mt-6 text-center">
+                    <h3 class="text-xl font-bold mb-2">Creating Your Comic</h3>
+                    <p id="loadingText" class="text-muted-foreground mb-4">Preparing your creation...</p>
+                    <div class="mt-4 h-2 bg-muted rounded-full overflow-hidden">
+                        <div id="generationProgress" class="h-full bg-primary rounded-full" style="width: 0%"></div>
+                    </div>
+                    <p class="mt-3 text-xs text-muted-foreground">Creating professional comic panels with perfect character consistency</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comic Display Area -->
+        <div id="comicDisplay" class="mt-12 hidden">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-2xl font-bold">
+                    <i class="fas fa-book-open mr-2"></i>Your Comic Strip
+                </h2>
+                <button id="downloadComicBtn" class="bg-primary hover:bg-opacity-90 text-primary-foreground font-medium py-2 px-4 rounded flex items-center">
+                    <i class="fas fa-download mr-2"></i>Download All Panels
+                </button>
+            </div>
+            
+            <!-- Comic Panels with Carousel Navigation -->
+            <div class="carousel-container relative">
+                <div class="carousel-nav-left absolute left-0 top-1/2 transform -translate-y-1/2 z-10">
+                    <button class="carousel-nav-btn bg-background/80 text-foreground p-2 rounded-full shadow-md hover:bg-primary/20">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+                
+                <div id="comicPanels" class="carousel-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-x-auto pb-4"></div>
+                
+                <div class="carousel-nav-right absolute right-0 top-1/2 transform -translate-y-1/2 z-10">
+                    <button class="carousel-nav-btn bg-background/80 text-foreground p-2 rounded-full shadow-md hover:bg-primary/20">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Carousel Progress Indicator -->
+            <div class="carousel-indicators flex justify-center mt-4">
+                <!-- Will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <footer class="mt-16 py-8 border-t border-border text-center text-muted-foreground">
+        <div class="container mx-auto px-4">
+            <p class="mb-2">ComicGenius Pro - AI-Powered Comic Creator</p>
+            <p class="text-sm">Built with <span class="text-primary">Gemini 2.5 Flash</span> for the Nano Banana Hackathon</p>
+            <p class="mt-4 text-sm">Made by <a href="https://www.linkedin.com/in/srinivas-nampalli/" target="_blank" class="text-primary hover:underline">Srinivas Nampalli</a></p>
+            <p class="mt-2 text-xs">Please <a href="https://github.com/Srinivas26k/ComicGenius-Pro" target="_blank" class="text-primary hover:underline">star our GitHub repository</a> if you like this project!</p>
+        </div>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+    <script src="ui-enhancements.js"></script>
+</body>
+</html>
