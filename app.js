@@ -167,6 +167,17 @@ class ComicGeniusPro {
             if (imageData) {
                 this.characterImage = `data:image/png;base64,${imageData}`;
                 
+                // Display the character image next to the canvas
+                const characterDisplay = document.getElementById('characterDisplay');
+                if (characterDisplay) {
+                    characterDisplay.innerHTML = `
+                        <div class="mt-4">
+                            <h3 class="text-lg font-semibold mb-2">Generated Character</h3>
+                            <img src="${this.characterImage}" alt="Generated Character" class="max-w-full h-auto border rounded-lg shadow">
+                        </div>
+                    `;
+                }
+                
                 // Show success notification
                 const notification = document.createElement('div');
                 notification.className = 'fixed top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded shadow-lg';
@@ -215,24 +226,32 @@ class ComicGeniusPro {
             // Clear previous panels
             this.panels = [];
             
-            // Store the character reference for consistency
-            let characterReference = this.characterImage;
+            // Use the original character reference for all panels to maintain consistency
+            const characterReference = this.characterImage;
             
             // Generate panels one by one to maintain character consistency
             for (let i = 0; i < panelCount; i++) {
-                const panelPrompt = `Create comic panel ${i+1} of ${panelCount} for this scene: ${sceneDescription}
-                CRITICAL: Maintain EXACT character consistency with the provided reference image.
-                Style: Comic book panel, professional illustration, clear storytelling, vibrant colors
-                Requirements:
-                1. Keep the character's facial features, costume, and appearance IDENTICAL to the reference
-                2. Create appropriate panel composition for storytelling
-                3. Add 1-2 speech bubbles with relevant dialogue
-                4. Include detailed background elements that match the scene description
-                5. Professional comic book art quality with dynamic poses and expressions
+                // Create a more detailed sequential narrative
+                const storyBeat = this.getSequentialStoryBeat(i, panelCount);
                 
-                Panel ${i+1} narrative focus: ${this.getPanelDescription(i, panelCount, sceneDescription)}
+                const panelPrompt = `Create comic panel ${i+1} of ${panelCount} for this sequential story.
+                Story context: ${sceneDescription}
+                Current story beat: ${storyBeat}
                 
-                Scene context: ${sceneDescription}`;
+                CRITICAL REQUIREMENTS:
+                1. Maintain EXACT character consistency with the provided reference image
+                2. Create a clear narrative progression from previous panels
+                3. Match the visual style to previous panels for continuity
+                4. Include 1-2 speech bubbles with relevant dialogue that advances the story
+                5. Focus on the specific story beat for this panel
+                
+                Visual Style: Comic book panel, professional illustration, clear storytelling, vibrant colors
+                Character Requirements:
+                - Keep facial features, costume, and appearance IDENTICAL to the reference
+                - Show appropriate emotions and actions for this story beat
+                Background Requirements:
+                - Create detailed background elements that match the story context
+                - Ensure backgrounds are consistent with previous panels where appropriate`;
                 
                 // Get character image as base64 (without data URL prefix)
                 const base64Data = characterReference.split(',')[1];
@@ -261,9 +280,6 @@ class ComicGeniusPro {
                 if (imageData) {
                     const panelImage = `data:image/png;base64,${imageData}`;
                     this.panels.push(panelImage);
-                    
-                    // Use this panel as the new character reference for better consistency
-                    characterReference = panelImage;
                 } else {
                     throw new Error(`Failed to generate panel ${i+1}`);
                 }
@@ -282,20 +298,37 @@ class ComicGeniusPro {
         }
     }
     
-    getPanelDescription(panelIndex, panelCount, sceneDescription) {
-        // Provide specific descriptions for each panel to create a narrative flow
-        const descriptions = [
-            "Establishing shot of the scene with the main character, wide angle view",
-            "Close-up of the character's expression or important action detail",
-            "Dynamic action shot showing the key moment or conflict",
-            "Resolution or aftermath of the scene, showing consequences or next steps"
+    getSequentialStoryBeat(panelIndex, panelCount) {
+        // Provide specific story beats for each panel to create a narrative flow
+        const storyBeats = [
+            "INTRODUCTION: Establish the setting and introduce the main character in their normal environment",
+            "INCITING INCIDENT: Something disrupts the character's normal world - a discovery, threat, or opportunity",
+            "RISING ACTION: Character reacts to the incident and begins to take action",
+            "CLIMAX: The key confrontation or moment of highest tension in the story",
+            "FALLING ACTION: The immediate aftermath of the climax",
+            "RESOLUTION: How the story concludes and what it means for the character"
         ];
         
-        if (panelIndex < descriptions.length) {
-            return descriptions[panelIndex];
+        // For 3-4 panels, we'll focus on the key beats
+        if (panelCount <= 4) {
+            const keyBeats = [
+                storyBeats[0], // Introduction
+                storyBeats[1], // Inciting incident
+                storyBeats[3], // Climax
+                storyBeats[5]  // Resolution
+            ];
+            
+            if (panelIndex < keyBeats.length) {
+                return keyBeats[panelIndex];
+            }
         }
         
-        return "Continue the story with appropriate panel composition";
+        // For more panels, use the full sequence
+        if (panelIndex < storyBeats.length) {
+            return storyBeats[panelIndex];
+        }
+        
+        return "Continue the story with appropriate narrative progression";
     }
     
     extractImageData(response) {
@@ -323,14 +356,24 @@ class ComicGeniusPro {
         // Clear previous panels
         comicPanels.innerHTML = '';
         
-        // Add each panel to the display
+        // Add each panel to the display with better styling and click functionality
         this.panels.forEach((panel, index) => {
             const panelElement = document.createElement('div');
-            panelElement.className = 'bg-white rounded-lg shadow-md overflow-hidden';
+            panelElement.className = 'bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transform transition duration-300 hover:scale-105';
             panelElement.innerHTML = `
-                <img src="${panel}" alt="Comic Panel ${index + 1}" class="w-full h-auto">
-                <div class="p-2 text-center font-bold text-gray-700">Panel ${index + 1}</div>
+                <div class="p-4 bg-gray-50 border-b">
+                    <h3 class="text-lg font-semibold text-gray-800">Panel ${index + 1}</h3>
+                </div>
+                <div class="p-2">
+                    <img src="${panel}" alt="Comic Panel ${index + 1}" class="w-full h-auto comic-panel-image">
+                </div>
             `;
+            
+            // Add click event to open popup
+            panelElement.addEventListener('click', () => {
+                this.openImagePopup(panel, `Comic Panel ${index + 1}`);
+            });
+            
             comicPanels.appendChild(panelElement);
         });
         
@@ -339,6 +382,66 @@ class ComicGeniusPro {
         
         // Scroll to the comic display
         comicDisplay.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    openImagePopup(imageSrc, title) {
+        // Create popup overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4';
+        overlay.id = 'image-popup-overlay';
+        
+        // Create popup content
+        const popupContent = document.createElement('div');
+        popupContent.className = 'relative max-w-4xl max-h-full bg-white rounded-lg overflow-hidden shadow-2xl';
+        
+        // Add title
+        const titleElement = document.createElement('div');
+        titleElement.className = 'p-4 bg-gray-800 text-white text-xl font-bold';
+        titleElement.textContent = title;
+        
+        // Add image
+        const imgElement = document.createElement('img');
+        imgElement.src = imageSrc;
+        imgElement.className = 'max-w-full max-h-[80vh] object-contain';
+        
+        // Add close button
+        const closeButton = document.createElement('button');
+        closeButton.className = 'absolute top-2 right-2 bg-gray-800 text-white rounded-full p-2 hover:bg-gray-700';
+        closeButton.innerHTML = '<i class="fas fa-times"></i>';
+        closeButton.addEventListener('click', () => {
+            document.body.removeChild(overlay);
+        });
+        
+        // Add download button
+        const downloadButton = document.createElement('button');
+        downloadButton.className = 'absolute top-2 right-12 bg-blue-600 text-white rounded-full p-2 hover:bg-blue-700';
+        downloadButton.innerHTML = '<i class="fas fa-download"></i>';
+        downloadButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const link = document.createElement('a');
+            link.href = imageSrc;
+            link.download = `${title.replace(/\s+/g, '-').toLowerCase()}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+        
+        // Assemble popup
+        popupContent.appendChild(titleElement);
+        popupContent.appendChild(imgElement);
+        popupContent.appendChild(closeButton);
+        popupContent.appendChild(downloadButton);
+        overlay.appendChild(popupContent);
+        
+        // Add click to close functionality
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                document.body.removeChild(overlay);
+            }
+        });
+        
+        // Add to document
+        document.body.appendChild(overlay);
     }
     
     downloadComic() {

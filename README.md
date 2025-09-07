@@ -11,12 +11,13 @@ ComicGenius Pro is an AI-powered comic creation tool that transforms simple sket
 ### ✨ Key Features
 
 - **Character Consistency**: Maintains exact character appearance across all panels using Gemini's advanced image understanding
-- **Multi-Panel Storytelling**: Create 3-5 panel comic strips with professional composition
+- **Sequential Storytelling**: Create 3-6 panel comic strips with proper narrative flow
 - **AI-Powered Generation**: Uses Gemini 2.5 Flash Image for intelligent comic creation
 - **Sketch to Comic**: Draw a simple character sketch and transform it into a professional comic character
-- **Dynamic Storytelling**: Generate engaging narratives with proper panel composition
-- **Speech Bubbles**: Automatic dialogue generation integrated into panels
+- **Story Script Input**: Paste your complete story or script for automatic panel generation
+- **Popup Viewer**: Click any panel to view it in a large popup with download option
 - **ZIP Export**: Download all panels in a single ZIP file
+- **Professional UI**: Sleek, modern interface inspired by professional creative software
 
 ### 🎯 Perfect For
 
@@ -50,7 +51,7 @@ ComicGenius Pro is an AI-powered comic creation tool that transforms simple sket
    - Draw a character sketch on the canvas
    - Describe your character in detail
    - Generate the character
-   - Describe your comic scene
+   - Paste your story/script
    - Generate your comic strip!
 
 ### Option 2: Local Development
@@ -71,9 +72,9 @@ open http://localhost:8080
 1. **Sketch Character**: Draw a simple character on the canvas
 2. **Describe Character**: Add detailed description of your character's appearance
 3. **Generate Character**: AI transforms your sketch into a professional comic character
-4. **Describe Scene**: Write a scene description for your comic story
-5. **Generate Comic**: AI creates a multi-panel comic strip with consistent characters
-6. **Download Result**: Get all panels in a ZIP file
+4. **Paste Story**: Write or paste your complete story/script
+5. **Generate Comic**: AI creates a sequential comic strip with consistent characters
+6. **View & Download**: Click panels to view large, download individual panels or ZIP all
 
 ## 🎯 Value Proposition
 
@@ -99,13 +100,13 @@ open http://localhost:8080
 ### Gemini 2.5 Flash Image Features Used:
 
 1. **Character Consistency**: Maintaining exact character appearance across multiple panels
-2. **Multi-Turn Editing**: Progressive refinement of character and scene elements
+2. **Sequential Storytelling**: Creating narrative flow with proper story beats
 3. **Text Rendering**: Accurate speech bubble generation with readable text
-4. **Contextual Understanding**: Following complex scene descriptions and panel requirements
+4. **Contextual Understanding**: Following complex story descriptions and panel requirements
 5. **Professional Quality**: Producing publication-ready comic art
 
 ### Innovation Highlights:
-- **Dynamic Storytelling**: First application to leverage Gemini's character consistency for comic creation
+- **Dynamic Storytelling**: First application to leverage Gemini's character consistency for sequential comic creation
 - **Professional Results**: Commercial-quality outputs suitable for publication
 - **User-Centric Design**: Simple interface hiding complex AI capabilities
 - **Scalable Solution**: Works for individuals and content creators at scale
@@ -122,13 +123,14 @@ Shows someone trying to draw a comic by hand, struggling with consistency and qu
 1. Sketch a simple superhero character on canvas (stick figure)
 2. Describe character: "A brave superhero with a red cape, blue mask, and lightning bolt symbol"
 3. Generate character with one click
-4. Describe scene: "Our hero discovers a mysterious portal in the city park"
-5. Generate 4-panel comic strip:
-   - Panel 1: Establishing shot of hero in park
-   - Panel 2: Close-up of hero's surprised expression
-   - Panel 3: Hero approaching the glowing portal
-   - Panel 4: Hero stepping through the portal
-6. Show ZIP download of all panels
+4. Paste story: "Our hero discovers a mysterious portal in the city park. The portal swirls with cosmic energy and draws the attention of nearby people. As the hero approaches, the portal begins to glow brighter. The hero steps through the portal to an unknown world."
+5. Generate 4-panel comic strip with sequential storytelling:
+   - Panel 1: Introduction - Hero in park
+   - Panel 2: Inciting incident - Discovery of portal
+   - Panel 3: Climax - Hero approaching portal
+   - Panel 4: Resolution - Hero stepping through portal
+6. Show popup viewer for large panel viewing
+7. Show ZIP download of all panels
 
 ### Impact (90-105s):
 Side-by-side comparison showing transformation from sketch to professional comic.
@@ -176,7 +178,7 @@ MIT License - Feel free to use, modify, and distribute.
 
 **Built in 48 hours for the Nano Banana Hackathon**
 
-- **Innovation**: First application leveraging Gemini's character consistency for comic creation
+- **Innovation**: First application leveraging Gemini's character consistency for sequential comic creation
 - **Technical Excellence**: Real-time Gemini 2.5 Flash Image integration with multi-turn consistency
 - **Business Impact**: Quantifiable value proposition with clear ROI for content creators
 - **User Experience**: Professional interface with intuitive comic creation workflow

@@ -16,36 +16,57 @@
     }
   </script>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="min-h-screen">
     <div class="container mx-auto px-4 py-8">
         <header class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-gray-800 mb-2">ComicGenius Pro</h1>
-            <p class="text-lg text-gray-600">AI-Powered Comic Creator with Character Consistency</p>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">ComicGenius Pro</h1>
+            <p class="text-xl text-gray-700 max-w-3xl mx-auto">AI-Powered Comic Creator with Character Consistency</p>
+            <div class="mt-6 flex flex-wrap justify-center gap-4">
+                <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium">
+                    <i class="fas fa-users mr-2"></i>Character Consistency
+                </div>
+                <div class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full text-sm font-medium">
+                    <i class="fas fa-book-open mr-2"></i>Sequential Storytelling
+                </div>
+                <div class="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium">
+                    <i class="fas fa-download mr-2"></i>One-Click Export
+                </div>
+            </div>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Character Creation Section -->
             <div class="bg-white rounded-lg shadow-lg p-6">
                 <h2 class="text-2xl font-bold mb-4 text-gray-800">Create Your Character</h2>
-                <div class="mb-4">
-                    <canvas id="characterCanvas" width="400" height="300" class="border-2 border-gray-300 rounded w-full"></canvas>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="characterDescription">
-                        Character Description
-                    </label>
-                    <textarea id="characterDescription" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" rows="3" placeholder="Describe your character (e.g., 'A brave superhero with a red cape and blue mask')"></textarea>
-                </div>
-                <div class="flex space-x-2">
-                    <button id="drawCharacterBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        Draw Character
-                    </button>
-                    <button id="generateCharacterBtn" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                        Generate Character
-                    </button>
-                    <button id="clearCharacterBtn" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                        Clear
-                    </button>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <div class="mb-4">
+                            <canvas id="characterCanvas" width="400" height="300" class="border-2 border-gray-300 rounded w-full"></canvas>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="characterDescription">
+                                Character Description
+                            </label>
+                            <textarea id="characterDescription" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" rows="3" placeholder="Describe your character (e.g., 'A brave superhero with a red cape and blue mask')"></textarea>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button id="drawCharacterBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                Draw Character
+                            </button>
+                            <button id="generateCharacterBtn" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                Generate Character
+                            </button>
+                            <button id="clearCharacterBtn" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                    <div id="characterDisplay" class="flex items-center justify-center">
+                        <div class="text-gray-500 text-center">
+                            <i class="fas fa-user-circle text-6xl mb-2"></i>
+                            <p>Your generated character will appear here</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -54,9 +75,9 @@
                 <h2 class="text-2xl font-bold mb-4 text-gray-800">Create Comic Panels</h2>
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="sceneDescription">
-                        Scene Description
+                        Story/Script
                     </label>
-                    <textarea id="sceneDescription" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" rows="3" placeholder="Describe the scene (e.g., 'Our hero flies over the city skyline at sunset')"></textarea>
+                    <textarea id="sceneDescription" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" rows="4" placeholder="Describe your story or paste your script (e.g., 'A superhero discovers a mysterious portal in the city park...')"></textarea>
                 </div>
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="panelCount">
@@ -66,43 +87,71 @@
                         <option value="3">3 Panels</option>
                         <option value="4" selected>4 Panels</option>
                         <option value="5">5 Panels</option>
+                        <option value="6">6 Panels</option>
                     </select>
                 </div>
-                <button id="generateComicBtn" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full">
-                    Generate Comic
+                <button id="generateComicBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded w-full transition duration-300">
+                    <i class="fas fa-magic mr-2"></i>Generate Comic Story
                 </button>
             </div>
         </div>
 
         <!-- Loading Indicator -->
         <div id="loadingIndicator" class="hidden mt-8 text-center">
-            <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
-            <p class="mt-4 text-lg text-gray-700">Creating your comic masterpiece...</p>
+            <div class="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500"></div>
+            <div class="mt-6">
+                <h3 class="text-2xl font-bold text-white mb-2">Creating Your Comic Masterpiece</h3>
+                <p class="text-lg text-gray-300">This may take a minute. Please be patient as we generate your panels...</p>
+                <div class="mt-4 w-64 h-3 bg-gray-700 rounded-full mx-auto overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-blue-400 to-purple-500 rounded-full animate-pulse"></div>
+                </div>
+            </div>
         </div>
 
         <!-- Comic Display Area -->
         <div id="comicDisplay" class="mt-12 hidden">
-            <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Your Comic Strip</h2>
-            <div id="comicPanels" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
-            <div class="mt-8 text-center">
-                <button id="downloadComicBtn" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded">
-                    <i class="fas fa-download mr-2"></i>Download Comic
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold text-white">
+                    <i class="fas fa-book-open mr-3"></i>Your Comic Strip
+                </h2>
+                <button id="downloadComicBtn" class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center">
+                    <i class="fas fa-download mr-2"></i>Download All Panels
                 </button>
             </div>
+            <div id="comicPanels" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
         </div>
 
         <!-- API Key Input -->
         <div class="mt-12 bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
-            <h2 class="text-2xl font-bold mb-4 text-gray-800">API Configuration</h2>
+            <div class="flex items-center mb-4">
+                <i class="fas fa-key text-blue-500 text-2xl mr-3"></i>
+                <h2 class="text-2xl font-bold text-gray-800">API Configuration</h2>
+            </div>
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="apiKey">
                     Gemini API Key
                 </label>
-                <input type="password" id="apiKey" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter your Gemini API key">
-                <p class="text-gray-600 text-xs mt-2">Get your API key from <a href="https://makersuite.google.com/app/apikey" target="_blank" class="text-blue-500 underline">Google AI Studio</a></p>
+                <div class="relative">
+                    <input type="password" id="apiKey" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-10" placeholder="Enter your Gemini API key">
+                    <i class="fas fa-lock absolute right-3 top-3 text-gray-400"></i>
+                </div>
+                <p class="text-gray-600 text-xs mt-2">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Get your API key from <a href="https://makersuite.google.com/app/apikey" target="_blank" class="text-blue-500 underline">Google AI Studio</a>. 
+                    Your key is stored locally and never sent to any server.
+                </p>
             </div>
         </div>
     </div>
+
+    </div>
+
+    <footer class="mt-16 py-8 text-center text-gray-400">
+        <div class="container mx-auto px-4">
+            <p class="mb-2">ComicGenius Pro - AI-Powered Comic Creator</p>
+            <p class="text-sm">Built with Gemini 2.5 Flash Image Preview for the Nano Banana Hackathon</p>
+        </div>
+    </footer>
 
     <script type="module" src="app.js"></script>
     <script src="ui-enhancements.js"></script>
